@@ -1,0 +1,81 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block title
+%}Registro{% endblock %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4">Registro de Usuario</h2>
+        <form method="post">
+          {% csrf_token %} {{ form|crispy }}
+
+          <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="terms"
+              required
+            />
+            <label class="form-check-label" for="terms">
+              Acepto los <a href="#">términos y condiciones</a>
+            </label>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Registrarse</button>
+          </div>
+        </form>
+
+        <div class="mt-3 text-center">
+          ¿Ya tienes una cuenta?
+          <a href="{% url 'users:login' %}">Inicia sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+  $(document).ready(function () {
+    // Validación de contraseña en tiempo real
+    $("#id_password1").on("input", function () {
+      let password = $(this).val();
+      let strength = 0;
+
+      // Validaciones
+      if (password.length >= 8) strength++;
+      if (password.match(/[a-z]/)) strength++;
+      if (password.match(/[A-Z]/)) strength++;
+      if (password.match(/[0-9]/)) strength++;
+      if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+      // Actualizar feedback
+      let feedback = $("#password-strength");
+      if (password.length === 0) {
+        feedback.text("");
+        return;
+      }
+
+      if (strength <= 2) {
+        feedback.text("Débil").removeClass().addClass("text-danger");
+      } else if (strength <= 4) {
+        feedback.text("Moderada").removeClass().addClass("text-warning");
+      } else {
+        feedback.text("Fuerte").removeClass().addClass("text-success");
+      }
+    });
+
+    // Mostrar/ocultar contraseña
+    $(".toggle-password").click(function () {
+      let input = $($(this).attr("toggle"));
+      if (input.attr("type") === "password") {
+        input.attr("type", "text");
+        $(this).html('<i class="bi bi-eye-slash"></i>');
+      } else {
+        input.attr("type", "password");
+        $(this).html('<i class="bi bi-eye"></i>');
+      }
+    });
+  });
+</script>
+{% endblock %} {% endblock %}

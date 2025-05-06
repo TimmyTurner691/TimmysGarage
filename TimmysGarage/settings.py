@@ -80,14 +80,9 @@ WSGI_APPLICATION = 'TimmysGarage.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'oraclecloud_high',
-        'USER': 'TimmysGarage',
-        'PASSWORD': 'OracleCloud123',
-        'OPTIONS': {
-            'wallet_location': r'C:\Users\jaket\Documents\DuocUC\Wallet_OracleCloud',  
-            'config_dir': r'C:\Users\jaket\Documents\DuocUC\Wallet_OracleCloud',
-            'wallet_password': 'OracleCloud123',
-        },
+        'NAME': 'localhost:1521/free',
+        'USER': 'C##TimmysGarage_Local',
+        'PASSWORD': 'OracleLocal123',
     }
 }
 

@@ -1,0 +1,94 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Tu Carrito de Compras</h2>
+  <div class="row">
+    <div class="col-12">
+      {% for item in cart_items %}
+      <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col-md-2">
+            <img
+              src="{{ item.product.image.url }}"
+              class="img-fluid rounded-start"
+              alt="{{ item.product.name }}"
+            />
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.product.name }}</h5>
+              <p class="card-text">
+                Precio unitario: ${{ item.product.price }}
+              </p>
+              <div class="input-group" style="max-width: 150px">
+                <button
+                  class="btn btn-outline-secondary"
+                  onclick="updateQuantity({{ item.product.id }}, -1)"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  class="form-control text-center"
+                  value="{{ item.quantity }}"
+                  min="1"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  onclick="updateQuantity({{ item.product.id }}, 1)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 d-flex align-items-center">
+            <button
+              class="btn btn-danger"
+              onclick="removeFromCart({{ item.product.id }})"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12 text-end">
+      <h4>Total: ${{ total_price }}</h4>
+      <a href="{% url 'checkout' %}" class="btn btn-success btn-lg"
+        >Finalizar Compra</a
+      >
+    </div>
+  </div>
+</div>
+
+<script>
+  function updateQuantity(productId, change) {
+    const newQuantity =
+      parseInt(
+        document.querySelector(`input[value="${currentQuantity}"]`).value
+      ) + change;
+
+    fetch(`/api/cart/${productId}/`, {
+      method: "PUT",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ quantity: newQuantity }),
+    }).then(() => location.reload());
+  }
+
+  function removeFromCart(productId) {
+    fetch(`/api/cart/${productId}/`, {
+      method: "DELETE",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+    }).then(() => location.reload());
+  }
+</script>
+{% endblock %}
